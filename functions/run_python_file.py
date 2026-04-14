@@ -1,8 +1,11 @@
 import subprocess
+import sys
 from pathlib import Path
 
 
-def run_python_file(working_directory: str, file_path: str, args=None) -> str:
+def run_python_file(
+    working_directory: str, file_path: str, args: list | None = None
+) -> str:
     try:
         path = Path(working_directory).resolve()
         target = (path / file_path).resolve()
@@ -14,7 +17,7 @@ def run_python_file(working_directory: str, file_path: str, args=None) -> str:
         if not target.suffix.endswith(".py"):
             return f'Error: "{file_path}" is not a Python file'
 
-        command = ["python", str(target)]
+        command = [sys.executable, str(target)]
         if args:
             command.extend(args)
 

@@ -1,11 +1,12 @@
 import argparse
+from typing import Sequence
 
 from config import settings
 from prompts import MODE_GENERAL, VALID_MODES, build_system_prompt
 from providers import create_provider
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="AI Code Assistant")
     parser.add_argument("user_prompt", type=str, help="Prompt to send to the model")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
@@ -18,13 +19,21 @@ def main() -> None:
     parser.add_argument(
         "--provider",
         choices=["gemini", "ollama"],
-        default="ollama",
+        default=None,
         help=(
             "LLM backend for this run (overrides LLM_PROVIDER from environment / .env). "
-            "Default: gemini unless set via LLM_PROVIDER."
+            "When omitted, LLM_PROVIDER from settings is used."
         ),
     )
-    args = parser.parse_args()
+    return parser
+
+
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    return build_parser().parse_args(argv)
+
+
+def main(argv: Sequence[str] | None = None) -> None:
+    args = parse_args(argv)
 
     runtime_settings = (
         settings.model_copy(update={"LLM_PROVIDER": args.provider})

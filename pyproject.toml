@@ -11,4 +11,15 @@ dependencies = [
     "ollama>=0.4.0",
     "pydantic-settings>=2.13.1",
     "pytest>=9.0.3",
+    "pytest-cov>=7.1.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-ra"

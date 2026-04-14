@@ -1,16 +1,22 @@
+from pathlib import Path
+
 from functions.write_file import write_file
 
 
-def test():
-    result = write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum")
-    print(result)
-
-    result = write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet")
-    print(result)
-
-    result = write_file("calculator", "/tmp/temp.txt", "this should not be allowed")
-    print(result)
+def test_writes_new_file(tmp_path: Path) -> None:
+    body = "hello"
+    result = write_file(str(tmp_path), "out.txt", body)
+    assert f'Successfully wrote to "out.txt" ({len(body)} characters written)' in result
+    assert (tmp_path / "out.txt").read_text() == body
 
 
-if __name__ == "__main__":
-    test()
+def test_writes_nested_path(tmp_path: Path) -> None:
+    result = write_file(str(tmp_path), "nested/out.txt", "x")
+    assert "Successfully wrote" in result
+    assert (tmp_path / "nested" / "out.txt").read_text() == "x"
+
+
+def test_rejects_path_outside_workdir(tmp_path: Path) -> None:
+    result = write_file(str(tmp_path), "../escape.txt", "bad")
+    assert "Cannot write to" in result
+    assert not (tmp_path.parent / "escape.txt").exists()

@@ -1,63 +1,46 @@
-import unittest
+from pathlib import Path
 
 from functions.run_python_file import run_python_file
 
 
-class TestCalculator(unittest.TestCase):
-    def test_main(self):
-        result = run_python_file("calculator", "main.py")
-        print(result)
-        assert (
-            result
-            == """STDOUT: Calculator App\nUsage: python main.py "<expression>"\nExample: python main.py "3 + 5"\nSTDERR: """
-        )
-
-    def test_calculator_run(self):
-        result = run_python_file("calculator", "main.py", ["3 + 5"])
-
-        assert (
-            result
-            == """STDOUT: {
-  "expression": "3 + 5",
-  "result": 8
-}
-STDERR: """
-        )
-
-    def test_calc_tests(self):
-        result = run_python_file("calculator", "tests.py")
-
-        assert (
-            result
-            == """STDOUT: STDERR: .........
-----------------------------------------------------------------------
-Ran 9 tests in 0.000s
-
-OK
-"""
-        )
-
-    def test_calc_error(self):
-        file_path = "../main.py"
-        result = run_python_file("calculator", file_path)
-
-        assert (
-            result
-            == f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
-        )
-
-    def test_calc_none(self):
-        filename = "nonexistent.p"
-        result = run_python_file("calculator", filename)
-
-        assert result == f'Error: "{filename}" does not exist or is not a regular file'
-
-    def test_calc_text(self):
-        file_path = "lorem.txt"
-        result = run_python_file("calculator", file_path)
-
-        assert result == f'Error: "{file_path}" is not a Python file'
+def test_run_main_no_args(playground_dir: Path) -> None:
+    result = run_python_file(str(playground_dir), "main.py")
+    assert result == (
+        "STDOUT: Calculator App\n"
+        'Usage: python main.py "<expression>"\n'
+        'Example: python main.py "3 + 5"\n'
+        "STDERR: "
+    )
 
 
-if __name__ == "__main__":
-    unittest.main()
+def test_run_main_with_expression(playground_dir: Path) -> None:
+    result = run_python_file(str(playground_dir), "main.py", ["3 + 5"])
+    assert result == (
+        "STDOUT: {\n" '  "expression": "3 + 5",\n' '  "result": 8\n' "}\n" "STDERR: "
+    )
+
+
+def test_run_unit_tests(playground_dir: Path) -> None:
+    result = run_python_file(str(playground_dir), "tests.py")
+    assert "Ran 9 tests" in result
+    assert "OK" in result
+
+
+def test_rejects_path_outside_workdir(playground_dir: Path) -> None:
+    file_path = "../main.py"
+    result = run_python_file(str(playground_dir), file_path)
+    assert result == (
+        f'Error: Cannot execute "{file_path}" as it is outside the permitted working directory'
+    )
+
+
+def test_missing_file(playground_dir: Path) -> None:
+    filename = "nonexistent.p"
+    result = run_python_file(str(playground_dir), filename)
+    assert result == f'Error: "{filename}" does not exist or is not a regular file'
+
+
+def test_rejects_non_python_file(playground_dir: Path) -> None:
+    file_path = "lorem.txt"
+    result = run_python_file(str(playground_dir), file_path)
+    assert result == f'Error: "{file_path}" is not a Python file'

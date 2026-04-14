@@ -1,22 +1,27 @@
-from functions.run_python_file import run_python_file
+from pathlib import Path
+
+import pytest
+
+import functions.get_file_content as get_file_content_module
+from functions.get_file_content import get_file_content
 
 
-def test():
-    result = run_python_file("calculator", "main.py")
-    print(result)
-
-    result = run_python_file("calculator", "tests.py")
-    print(result)
-
-    result = run_python_file("calculator", "../main.py")
-    print(result)
-
-    result = run_python_file("calculator", "nonexistent.py")
-    print(result)
-
-    result = run_python_file("calculator", "lorem.txt")
-    print(result)
+def test_reads_small_file(tmp_path: Path) -> None:
+    (tmp_path / "f.txt").write_text("hello world")
+    result = get_file_content(str(tmp_path), "f.txt")
+    assert result == "hello world"
 
 
-if __name__ == "__main__":
-    test()
+def test_missing_file(tmp_path: Path) -> None:
+    result = get_file_content(str(tmp_path), "nope.txt")
+    assert "not found" in result.lower()
+
+
+def test_truncates_when_longer_than_limit(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr(get_file_content_module.settings, "MAX_FILE_CONTENTS_LENGTH", 5)
+    (tmp_path / "big.txt").write_text("abcdefghij")
+    result = get_file_content(str(tmp_path), "big.txt")
+    assert result.startswith("abcde")
+    assert "truncated" in result
