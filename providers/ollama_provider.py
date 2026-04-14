@@ -1,0 +1,103 @@
+import json
+from typing import Any
+
+from ollama import Client
+
+from call_function import execute_tool
+from config import Settings
+from tools.tool_definitions import build_ollama_tools
+
+
+def _message_to_dict(message: Any) -> dict:
+    """Serialize an Ollama SDK message object to the dict form the API expects."""
+
+    if isinstance(message, dict):
+        return message
+
+    if hasattr(message, "model_dump"):
+        return message.model_dump()
+
+    d = {"role": message.role}
+    if getattr(message, "content", None):
+        d["content"] = message.content
+
+    tool_calls = getattr(message, "tool_calls", None)
+    if tool_calls:
+        serialized = []
+        for tc in tool_calls:
+            if isinstance(tc, dict):
+                serialized.append(tc)
+                continue
+
+            fn = getattr(tc, "function", None)
+            serialized.append(
+                {
+                    "id": getattr(tc, "id", None),
+                    "type": getattr(tc, "type", "function") or "function",
+                    "function": {
+                        "name": fn.name if fn else None,
+                        "arguments": fn.arguments if fn else {},
+                    },
+                }
+            )
+        d["tool_calls"] = serialized
+    return d
+
+
+class OllamaProvider:
+    def __init__(self, settings: Settings):
+        host = settings.OLLAMA_HOST
+        self.client = Client(host=host) if host else Client()
+        self.settings = settings
+        self.tools = build_ollama_tools()
+
+    def run_agent(
+        self,
+        user_prompt: str,
+        system_instruction: str,
+        *,
+        verbose: bool = False,
+        max_turns: int = 20,
+    ) -> None:
+        messages = [{"role": "user", "content": user_prompt}]
+
+        for _ in range(max_turns):
+            response = self.client.chat(
+                model=self.settings.OLLAMA_MODEL,
+                messages=messages,
+                tools=self.tools,
+                stream=False,
+            )
+            msg = response.message
+
+            if not getattr(msg, "tool_calls", None):
+                print("Response:")
+                print(msg.content or "")
+                return
+
+            messages.append(_message_to_dict(msg))
+
+            for tool_call in msg.tool_calls:
+                fn = tool_call.function
+                raw_args = fn.arguments
+                if isinstance(raw_args, str):
+                    try:
+                        args_dict = json.loads(raw_args) if raw_args else {}
+                    except json.JSONDecodeError:
+                        args_dict = {}
+                else:
+                    args_dict = dict(raw_args) if raw_args else {}
+
+                print(f"Calling function: {fn.name}({args_dict})")
+                payload = execute_tool(fn.name, args_dict)
+                tool_message = {"role": "tool", "content": json.dumps(payload)}
+                if getattr(tool_call, "id", None):
+                    tool_message["tool_call_id"] = tool_call.id
+                if fn.name:
+                    tool_message["name"] = fn.name
+                messages.append(tool_message)
+
+        print(
+            "Error: Maximum iterations reached without a final text response from the model."
+        )
+        raise SystemExit(1)

@@ -1,14 +1,22 @@
 from dotenv import load_dotenv
-from pydantic import BaseModel
+from pydantic_settings import BaseSettings
+from typing import Literal
 
 load_dotenv()
 
 
-class Settings(BaseModel):
+class Settings(BaseSettings):
     MAX_FILE_CONTENTS_LENGTH: int = 1000
-    WORKING_DIR: str = "./calculator"
-    LLM_PROVIDER: str = "gemini"
+    WORKING_DIR: str = "./playground_calculator"
+    LLM_PROVIDER: Literal["gemini", "ollama"] = "gemini"
+
+    # Google
     GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_API_KEY: str | None = None
+
+    # Ollama
+    OLLAMA_MODEL: str = "gemma4"
+    OLLAMA_HOST: str | None = None
 
 
 settings = Settings()
