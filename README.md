@@ -5,6 +5,17 @@ Also there is ollama provider for usage with local models
 
 ## Setup
 
+If you plan to use cloud model, like gemini or cloud ollama models, setup `.env` file from `.env.showcase`
+If you want to use it with local ollama model (i use `gemma4` for this), you should install ollama and local model with commands:
+
+```bash
+irm https://ollama.com/install.ps1 | iex # install ollama windows (suppose you run local model on the high-end gpu)
+
+ollama pull gemma4:latest # install gemma4 in ollama
+```
+
+Now you just need to instal dependencies:
+
 ```bash
 uv sync
 # or
@@ -45,13 +56,11 @@ python main.py "List files" --provider ollama --verbose --mode debug
 ### Example conversation
 
 ```bash
-python main.py "Show current directory"
+(.venv) ➜  agent git:(main) ✗ python main.py "Show current directory"
 
-answer:
 Calling function: get_files_info({})
 Response:
 The current directory contains the following items:
-
 *   **lorem.txt**: A file with a size of 28 bytes.
 *   **main.py**: A file with a size of 748 bytes.
 *   **pkg**: A directory.
@@ -59,9 +68,8 @@ The current directory contains the following items:
 ```
 
 ```bash
-python main.py "Plan a refactoring on main.py" --mode plan
+(.venv) ➜  agent git:(main) ✗ python main.py "Plan a refactoring on main.py" --mode plan
 
-answer:
 Calling function: get_file_content({'file_path': 'main.py'})
 Response:
 This is a straightforward application launcher, and the existing code is quite functional. A refactoring plan should focus on improving **robustness**, **readability**, and **maintainability** by adding modern Python features like type hinting and better structure, without changing the core functionality.
@@ -85,19 +93,19 @@ The broad `except Exception` is a catch-all. While sometimes necessary for simpl
 
 Introduce a small provider interface used by main.py
 
-```cmd
-________________________________________________________
-│                                                      |
-│ ┌─────────┐   ┌──────────────┐   ┌──────────────┐    |
-│ │         │   │              │   │              │    |
-│ │ main.py ├──►│ LLMProvider  ├──►│ GeminiClient │    |
-│ │         │   │       ┬      │   │              │    |
-│ └────┬────┘   └──────────────┘   └──────────────┘    |
-│      │                └────────┐                     |
-│      │        ┌──────────────┐ │ ┌──────────────┐    |
-│      │        │              │ │ │              │    |
-│      └───────►│ ToolExecutor │◄┴►┤ OllamaClient │    |
-│               │              │   │              │    |
-│               └──────────────┘   └──────────────┘    |
---------------------------------------------------------
+```
+┌──────────────────────────────────────────────────────┐
+│                                                      │
+│ ┌─────────┐   ┌──────────────┐   ┌──────────────┐    │
+│ │         │   │              │   │              │    │
+│ │ main.py ├──►│ LLMProvider  ├──►│ GeminiClient │    │
+│ │         │   │       ┬      │   │              │    │
+│ └────┬────┘   └──────────────┘   └──────────────┘    │
+│      │                └────────┐                     │
+│      │        ┌──────────────┐ │ ┌──────────────┐    │
+│      │        │              │ │ │              │    │
+│      └───────►│ ToolExecutor │◄┴►┤ OllamaClient │    │
+│               │              │   │              │    │
+│               └──────────────┘   └──────────────┘    │
+└──────────────────────────────────────────────────────┘ 
 ```
