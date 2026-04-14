@@ -15,9 +15,23 @@ def main() -> None:
         default=MODE_GENERAL,
         help="Behavior rule pack: general, plan, arch (architecture), or debug",
     )
+    parser.add_argument(
+        "--provider",
+        choices=["gemini", "ollama"],
+        default="ollama",
+        help=(
+            "LLM backend for this run (overrides LLM_PROVIDER from environment / .env). "
+            "Default: gemini unless set via LLM_PROVIDER."
+        ),
+    )
     args = parser.parse_args()
 
-    provider = create_provider(settings)
+    runtime_settings = (
+        settings.model_copy(update={"LLM_PROVIDER": args.provider})
+        if args.provider is not None
+        else settings
+    )
+    provider = create_provider(runtime_settings)
     provider.run_agent(
         args.user_prompt,
         build_system_prompt(args.mode),
