@@ -20,19 +20,3 @@ def write_file(working_directory: str, file_path: str, content: str) -> str:
         )
     except Exception as e:
         return f"Error: Failed to write file - {e}"
-
-
-if __name__ == "__main__":
-    print(
-        write_file("playground_calculator", "lorem.txt", "wait, this isn't lorem ipsum")
-    )
-    print(
-        write_file(
-            "playground_calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"
-        )
-    )
-    print(
-        write_file(
-            "playground_calculator", "/tmp/temp.txt", "this should not be allowed"
-        )
-    )

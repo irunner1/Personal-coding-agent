@@ -22,8 +22,3 @@ def get_file_content(working_directory: str, file_path: str) -> str:
             return content
     except Exception as e:
         return str(e)
-
-
-if __name__ == "__main__":
-    print(get_file_content("playground_calculator", "main.py"))
-    print(get_file_content("playground_calculator", "lorem.txt"))

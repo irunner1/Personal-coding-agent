@@ -32,7 +32,3 @@ def run_python_file(working_directory: str, file_path: str, args=None) -> str:
         return result
     except Exception as e:
         return f"Error: executing Python file: {e}"
-
-
-if __name__ == "__main__":
-    print(run_python_file("playground_calculator", "main.py"))

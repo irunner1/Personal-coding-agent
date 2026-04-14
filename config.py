@@ -9,7 +9,7 @@ load_dotenv()
 class Settings(BaseSettings):
     MAX_FILE_CONTENTS_LENGTH: int = 1000
     WORKING_DIR: str = "./playground_calculator"
-    LLM_PROVIDER: Literal["gemini", "ollama"] = "gemini"
+    LLM_PROVIDER: Literal["gemini", "ollama"] = "ollama"
 
     # Google
     GEMINI_MODEL: str = "gemini-2.5-flash"

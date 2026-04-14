@@ -35,8 +35,3 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
             f"- {file}: file_size={file_path.stat().st_size}, is_dir={file_path.is_dir()}"
         )
     return "\n".join(files)
-
-
-if __name__ == "__main__":
-    print(get_files_info("playground_calculator"))
-    print(get_files_info("playground_calculator", "../"))
