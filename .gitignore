@@ -1,0 +1,47 @@
+# Macos cache
+.DS_Store
+
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+.env
+
+# Pycharm
+.idea
+
+# Vs Code
+.vscode
+
+# Pytest cache
+.pytest_cache
+
+# Jupyter NB Checkpoints
+.ipynb_checkpoints/
+
+# Mypy cache
+.mypy_cache/
+
+# Tests
+.coverage
+
+# DB
+pgdata/
+
+# Redpanda
+redpanda/
+
+# ruff cache
+.ruff_cache
+
+# Project file mount
+cache
+
+# local files
+data/
