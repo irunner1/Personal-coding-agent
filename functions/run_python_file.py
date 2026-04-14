@@ -1,21 +1,5 @@
 import subprocess
 from pathlib import Path
-from google.genai import types
-
-
-schema_run_python_file = types.FunctionDeclaration(
-    name="run_python_file",
-    description="Run python file with arguements",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "directory": types.Schema(
-                type=types.Type.STRING,
-                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
-            ),
-        },
-    ),
-)
 
 
 def run_python_file(working_directory: str, file_path: str, args=None) -> str:
@@ -51,4 +35,4 @@ def run_python_file(working_directory: str, file_path: str, args=None) -> str:
 
 
 if __name__ == "__main__":
-    print(run_python_file("calculator", "main.py"))
+    print(run_python_file("playground_calculator", "main.py"))

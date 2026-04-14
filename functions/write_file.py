@@ -1,20 +1,4 @@
-from get_files_info import resolve_target_path
-from google.genai import types
-
-
-schema_write_file = types.FunctionDeclaration(
-    name="write_file",
-    description="Write content to file on file_path in working_directory, if no file, create file on working directory",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "directory": types.Schema(
-                type=types.Type.STRING,
-                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
-            ),
-        },
-    ),
-)
+from functions.get_files_info import resolve_target_path
 
 
 def write_file(working_directory: str, file_path: str, content: str) -> str:
@@ -39,6 +23,16 @@ def write_file(working_directory: str, file_path: str, content: str) -> str:
 
 
 if __name__ == "__main__":
-    print(write_file("calculator", "lorem.txt", "wait, this isn't lorem ipsum"))
-    print(write_file("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"))
-    print(write_file("calculator", "/tmp/temp.txt", "this should not be allowed"))
+    print(
+        write_file("playground_calculator", "lorem.txt", "wait, this isn't lorem ipsum")
+    )
+    print(
+        write_file(
+            "playground_calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet"
+        )
+    )
+    print(
+        write_file(
+            "playground_calculator", "/tmp/temp.txt", "this should not be allowed"
+        )
+    )

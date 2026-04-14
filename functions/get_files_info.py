@@ -1,22 +1,5 @@
 import os
-
 from pathlib import Path
-from google.genai import types
-
-
-schema_get_files_info = types.FunctionDeclaration(
-    name="get_files_info",
-    description="Lists files in a specified directory relative to the working directory, providing file size and directory status",
-    parameters=types.Schema(
-        type=types.Type.OBJECT,
-        properties={
-            "directory": types.Schema(
-                type=types.Type.STRING,
-                description="Directory path to list files from, relative to the working directory (default is the working directory itself)",
-            ),
-        },
-    ),
-)
 
 
 def resolve_target_path(working_directory: str, target: str) -> Path:
@@ -55,5 +38,5 @@ def get_files_info(working_directory: str, directory: str = ".") -> str:
 
 
 if __name__ == "__main__":
-    print(get_files_info("calculator"))
-    print(get_files_info("calculator", "../"))
+    print(get_files_info("playground_calculator"))
+    print(get_files_info("playground_calculator", "../"))
