@@ -10,6 +10,6 @@ def repo_root() -> Path:
 
 @pytest.fixture
 def playground_dir(repo_root: Path) -> Path:
-    path = repo_root / "playground_calculator"
+    path = repo_root / "playground"
     assert path.is_dir(), f"Missing fixture project: {path}"
     return path

@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from functions.write_file import write_file
+from src.functions.write_file import write_file
 
 
 def test_writes_new_file(tmp_path: Path) -> None:

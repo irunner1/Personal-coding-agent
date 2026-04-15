@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from functions.get_files_info import get_files_info
+from src.functions.get_files_info import get_files_info
 
 
 def test_lists_current_directory(tmp_path: Path) -> None:

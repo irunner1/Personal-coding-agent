@@ -2,9 +2,9 @@ from unittest.mock import MagicMock
 
 import pytest
 
-import main as main_module
-from config import Settings
-from prompts import MODE_GENERAL
+import src.main as main_module
+from src.config import Settings
+from src.prompts import MODE_GENERAL
 
 
 def test_parse_args_defaults() -> None:

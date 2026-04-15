@@ -3,6 +3,15 @@
 Python-based project for free coding agent using google genai (in purpose of testing google api)
 Also there is ollama provider for usage with local models
 
+## TODO:
+
+- check if i could make tunnel between pc with llm on gpu
+- add full cli tool support/commands
+- add fully functional modes (agent, debug, architecture)
+- add memory for agent
+- add indexing for project
+- make requests not in single cli call, but in separate chat (like cursor cli)
+
 ## Setup
 
 If you plan to use cloud model, like gemini or cloud ollama models, setup `.env` file from `.env.example`
@@ -97,7 +106,7 @@ The broad `except Exception` is a catch-all. While sometimes necessary for simpl
 
 Introduce a small provider interface used by main.py
 
-```
+```schema
 ┌──────────────────────────────────────────────────────┐
 │                                                      │
 │ ┌─────────┐   ┌──────────────┐   ┌──────────────┐    │

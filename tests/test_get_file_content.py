@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-import functions.get_file_content as get_file_content_module
-from functions.get_file_content import get_file_content
+import src.functions.get_file_content as get_file_content_module
+from src.functions.get_file_content import get_file_content
 
 
 def test_reads_small_file(tmp_path: Path) -> None:

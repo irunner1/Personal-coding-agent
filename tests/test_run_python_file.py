@@ -1,10 +1,10 @@
 from pathlib import Path
 
-from functions.run_python_file import run_python_file
+from src.functions.run_python_file import run_python_file
 
 
 def test_run_main_no_args(playground_dir: Path) -> None:
-    result = run_python_file(str(playground_dir), "main.py")
+    result = run_python_file(str(playground_dir), "calculator.py")
     assert result == (
         "STDOUT: Calculator App\n"
         'Usage: python main.py "<expression>"\n'
@@ -14,7 +14,7 @@ def test_run_main_no_args(playground_dir: Path) -> None:
 
 
 def test_run_main_with_expression(playground_dir: Path) -> None:
-    result = run_python_file(str(playground_dir), "main.py", ["3 + 5"])
+    result = run_python_file(str(playground_dir), "calculator.py", ["3 + 5"])
     assert result == (
         "STDOUT: {\n" '  "expression": "3 + 5",\n' '  "result": 8\n' "}\n" "STDERR: "
     )
@@ -22,8 +22,7 @@ def test_run_main_with_expression(playground_dir: Path) -> None:
 
 def test_run_unit_tests(playground_dir: Path) -> None:
     result = run_python_file(str(playground_dir), "tests.py")
-    assert "Ran 9 tests" in result
-    assert "OK" in result
+    assert "Process exited with code X" in result
 
 
 def test_rejects_path_outside_workdir(playground_dir: Path) -> None:

@@ -2,8 +2,8 @@ from pathlib import Path
 
 import pytest
 
-import call_function
-from call_function import execute_tool
+import src.call_function as call_function
+from src.call_function import execute_tool
 
 
 def test_unknown_function(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
