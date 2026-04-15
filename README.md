@@ -5,11 +5,11 @@ Also there is ollama provider for usage with local models
 
 ## Setup
 
-If you plan to use cloud model, like gemini or cloud ollama models, setup `.env` file from `.env.showcase`
+If you plan to use cloud model, like gemini or cloud ollama models, setup `.env` file from `.env.example`
 If you want to use it with local ollama model (i use `gemma4` for this), you should install ollama and local model with commands:
 
 ```bash
-irm https://ollama.com/install.ps1 | iex # install ollama windows (suppose you run local model on the high-end gpu)
+irm https://ollama.com/install.ps1 | iex # install ollama on windows (suppose you run local model on the high-end gpu)
 
 ollama pull gemma4:latest # install gemma4 in ollama
 ```
@@ -35,7 +35,11 @@ pytest
 Show all functions:
 
 ```bash
-python main.py --help
+python -m src.main --help
+# or with uv
+uv run coding-agent --help 
+# or inside venv
+coding-agent --help
 ```
 
 Project folder set to playground_calculator, so llm have access to all folder contents
@@ -43,20 +47,20 @@ Project folder set to playground_calculator, so llm have access to all folder co
 Example commands:
 
 ```bash
-python main.py "Read main.py" --verbose
-python main.py "Plan a refactor on main.py" --mode plan
-python main.py "Fix the failing test" --mode debug
+coding-agent "Read main.py" --verbose
+coding-agent "Plan a refactor on main.py" --mode plan
+coding-agent "Fix the failing test" --mode debug
 
 # switch provider
-python main.py "Your prompt" --provider gemini
-python main.py "List files" --provider ollama --verbose --mode debug
+coding-agent "Your prompt" --provider gemini
+coding-agent "List files" --provider ollama --verbose --mode debug
 
 ```
 
 ### Example conversation
 
 ```bash
-(.venv) ➜  agent git:(main) ✗ python main.py "Show current directory"
+(.venv) ➜  agent git:(main) ✗ coding-agent "Show current directory"
 
 Calling function: get_files_info({})
 Response:
@@ -68,7 +72,7 @@ The current directory contains the following items:
 ```
 
 ```bash
-(.venv) ➜  agent git:(main) ✗ python main.py "Plan a refactoring on main.py" --mode plan
+(.venv) ➜  agent git:(main) ✗ coding-agent "Plan a refactoring on main.py" --mode plan
 
 Calling function: get_file_content({'file_path': 'main.py'})
 Response:

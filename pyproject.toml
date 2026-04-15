@@ -12,6 +12,7 @@ dependencies = [
     "pydantic-settings>=2.13.1",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
+    "ruff>=0.15.10",
 ]
 
 [project.optional-dependencies]
@@ -23,3 +24,21 @@ dev = [
 testpaths = ["tests"]
 pythonpath = ["."]
 addopts = "-ra"
+
+[tool.ruff]
+line-length = 110
+target-version = "py313"
+lint.select = ["E", "F", "I", "B", "W", "ASYNC", "C4"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.uv]
+package = true
+
+[project.scripts]
+coding_agent = "main:main"

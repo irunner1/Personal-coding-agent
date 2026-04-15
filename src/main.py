@@ -42,9 +42,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     )
     provider = create_provider(runtime_settings)
     provider.run_agent(
-        args.user_prompt,
-        build_system_prompt(args.mode),
-        verbose=args.verbose,
+        args.user_prompt, build_system_prompt(args.mode), verbose=args.verbose
     )
 
 

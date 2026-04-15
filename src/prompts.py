@@ -25,14 +25,16 @@ PLAN_PACK = """
 ## Planning mode
 - Before the first write_file call, briefly outline your plan: steps, files you will touch, and risks.
 - Prefer read-only tools (get_files_info, get_file_content) before modifying anything.
-- If the user asked only for a plan, stop after the plan without calling write_file unless they also asked for implementation.
+- If the user asked only for a plan, \
+stop after the plan without calling write_file unless they also asked for implementation.
 """
 
 ARCHITECTURE_PACK = """
 ## Architecture mode
 - Respect clear structure: keep changes localized; avoid wide refactors unless explicitly requested.
 - Match existing naming and layout in the repo. Add or update tests when behavior changes in a meaningful way.
-- If a request would require rewriting large unrelated areas, explain the scope and propose a smaller safe change.
+- If a request would require rewriting large unrelated areas, \
+explain the scope and propose a smaller safe change.
 """
 
 DEBUG_PACK = """

@@ -60,7 +60,8 @@ TOOL_SPECS = [
     {
         "name": "write_file",
         "description": (
-            "Write or overwrite a file relative to the working directory; creates parent directories as needed."
+            "Write or overwrite a file relative to the working directory; "
+            "creates parent directories as needed."
         ),
         "parameters": {
             "type": "object",

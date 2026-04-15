@@ -3,7 +3,7 @@ from providers.gemini_provider import GeminiProvider
 from providers.ollama_provider import OllamaProvider
 
 
-def create_provider(settings: Settings):
+def create_provider(settings: Settings) -> OllamaProvider | GeminiProvider:
     if settings.LLM_PROVIDER == "ollama":
         return OllamaProvider(settings)
     if settings.LLM_PROVIDER == "gemini":

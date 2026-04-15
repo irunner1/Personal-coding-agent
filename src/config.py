@@ -1,3 +1,5 @@
+"""Service settings."""
+
 from typing import Literal
 
 from dotenv import load_dotenv
@@ -8,7 +10,7 @@ load_dotenv()
 
 class Settings(BaseSettings):
     MAX_FILE_CONTENTS_LENGTH: int = 1000
-    WORKING_DIR: str = "./playground_calculator"
+    WORKING_DIR: str = "./playground"
     LLM_PROVIDER: Literal["gemini", "ollama"] = "ollama"
 
     # Google
