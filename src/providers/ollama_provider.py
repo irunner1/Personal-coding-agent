@@ -1,10 +1,9 @@
 import json
 from typing import Any
 
-from ollama import Client
-
 from call_function import execute_tool
 from config import Settings
+from ollama import Client
 from tools.tool_definitions import build_ollama_tools
 
 
@@ -51,6 +50,30 @@ class OllamaProvider:
         self.settings = settings
         self.tools = build_ollama_tools()
 
+    def new_chat_state(self, system_instruction: str) -> list[dict]:
+        return [{"role": "system", "content": system_instruction}]
+
+    def run_chat(
+        self,
+        state: Any,
+        user_text: str,
+        system_instruction: str,
+        *,
+        verbose: bool = False,
+        max_turns: int = 20,
+    ) -> str:
+        messages = state
+        if not messages:
+            messages.append({"role": "system", "content": system_instruction})
+        elif messages[0].get("role") != "system":
+            messages.insert(0, {"role": "system", "content": system_instruction})
+        messages.append({"role": "user", "content": user_text})
+        return self._run_tool_loop_until_text(
+            messages,
+            verbose=verbose,
+            max_turns=max_turns,
+        )
+
     def run_agent(
         self,
         user_prompt: str,
@@ -59,8 +82,23 @@ class OllamaProvider:
         verbose: bool = False,
         max_turns: int = 20,
     ) -> None:
-        messages = [{"role": "user", "content": user_prompt}]
+        messages = [
+            {"role": "system", "content": system_instruction},
+            {"role": "user", "content": user_prompt},
+        ]
+        self._run_tool_loop_until_text(
+            messages,
+            verbose=verbose,
+            max_turns=max_turns,
+        )
 
+    def _run_tool_loop_until_text(
+        self,
+        messages: list[dict],
+        *,
+        verbose: bool,
+        max_turns: int,
+    ) -> str:
         for _ in range(max_turns):
             response = self.client.chat(
                 model=self.settings.OLLAMA_MODEL,
@@ -71,9 +109,10 @@ class OllamaProvider:
             msg = response.message
 
             if not getattr(msg, "tool_calls", None):
+                text = msg.content or ""
                 print("Response:")
-                print(msg.content or "")
-                return
+                print(text)
+                return text
 
             messages.append(_message_to_dict(msg))
 

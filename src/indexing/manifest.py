@@ -4,10 +4,9 @@ import json
 from datetime import datetime
 from pathlib import Path
 
-from pydantic import BaseModel
-
 from config import Settings
 from memory_store import coding_agent_root
+from pydantic import BaseModel
 
 DEFAULT_IGNORE_DIRS = frozenset(
     {

@@ -1,7 +1,5 @@
 """Interactive terminal chat loop."""
 
-from pathlib import Path
-
 from config import Settings
 from memory_store import load_memory_text
 from prompts import build_system_prompt
@@ -28,7 +26,7 @@ def run_chat(
     gemini_turns = []
     state = provider.new_chat_state(system_instruction)
 
-    sess_path: Path | None = None
+    sess_path = None
     if session_name:
         sess_path = session_path(runtime_settings, session_name)
         if resume and sess_path.is_file():
@@ -70,9 +68,7 @@ def run_chat(
             print("Cleared conversation in memory.")
             continue
 
-        assistant = provider.run_chat_turn(
-            state, line, system_instruction, verbose=verbose
-        )
+        assistant = provider.run_chat(state, line, system_instruction, verbose=verbose)
 
         provider = runtime_settings.LLM_PROVIDER
         if sess_path:
