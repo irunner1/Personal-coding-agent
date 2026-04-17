@@ -24,9 +24,7 @@ TOOL_SPECS = [
     },
     {
         "name": "get_file_content",
-        "description": (
-            "Return file contents up to a configured maximum length; large files are truncated."
-        ),
+        "description": ("Return file contents up to a configured maximum length; large files are truncated."),
         "parameters": {
             "type": "object",
             "properties": {
@@ -76,6 +74,34 @@ TOOL_SPECS = [
                 },
             },
             "required": ["file_path", "content"],
+        },
+    },
+    {
+        "name": "grep_project",
+        "description": (
+            "Search text files under the working directory for a regular expression. "
+            "Returns matching lines as path:line:text (truncated when many hits)."
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "pattern": {
+                    "type": "string",
+                    "description": "Python regex pattern to search for in each line.",
+                },
+                "directory": {
+                    "type": "string",
+                    "description": (
+                        "Directory to search under, relative to the working directory "
+                        "(default: working directory root)."
+                    ),
+                },
+                "max_hits": {
+                    "type": "integer",
+                    "description": "Optional cap on number of matching lines returned.",
+                },
+            },
+            "required": ["pattern"],
         },
     },
 ]

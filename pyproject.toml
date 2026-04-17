@@ -12,7 +12,6 @@ dependencies = [
     "pydantic-settings>=2.13.1",
     "pytest>=9.0.3",
     "pytest-cov>=7.1.0",
-    "ruff>=0.15.10",
 ]
 
 [project.optional-dependencies]
@@ -36,6 +35,9 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
 
 [tool.uv]
 package = true
