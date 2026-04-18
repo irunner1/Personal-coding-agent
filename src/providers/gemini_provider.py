@@ -35,8 +35,8 @@ class GeminiProvider:
             )
         )
         return self._run_tool_loop_until_text(
-            contents,
-            system_instruction,
+            contents=contents,
+            system_instruction=system_instruction,
             verbose=verbose,
             max_turns=max_turns,
         )
@@ -56,8 +56,8 @@ class GeminiProvider:
             )
         ]
         self._run_tool_loop_until_text(
-            contents,
-            system_instruction,
+            contents=contents,
+            system_instruction=system_instruction,
             verbose=verbose,
             max_turns=max_turns,
         )
@@ -66,7 +66,6 @@ class GeminiProvider:
         self,
         contents: list[types.Content],
         system_instruction: str,
-        *,
         verbose: bool,
         max_turns: int,
     ) -> str:

@@ -20,10 +20,12 @@ function_map = {
 
 def execute_tool(function_name: str, raw_args: dict | None) -> dict:
     """Run a tool by name; returns a JSON-serializable dict with `result` or `error`."""
-    args = dict(raw_args) if raw_args else {}
     if function_name not in function_map:
         return {"error": f"Unknown function: {function_name}"}
+
+    args = dict(raw_args) if raw_args else {}
     args["working_directory"] = settings.WORKING_DIR
+
     try:
         result = function_map[function_name](**args)
         return {"result": result}

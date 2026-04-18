@@ -92,13 +92,7 @@ class OllamaProvider:
             max_turns=max_turns,
         )
 
-    def _run_tool_loop_until_text(
-        self,
-        messages: list[dict],
-        *,
-        verbose: bool,
-        max_turns: int,
-    ) -> str:
+    def _run_tool_loop_until_text(self, messages: list[dict], max_turns: int) -> str:
         for _ in range(max_turns):
             response = self.client.chat(
                 model=self.settings.OLLAMA_MODEL,

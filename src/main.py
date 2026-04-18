@@ -14,11 +14,10 @@ SUBCOMMANDS = frozenset({"run", "chat", "index", "memory"})
 
 def normalize_argv(argv: Sequence[str] | None) -> list[str]:
     """Prepend implicit 'run' for legacy invocations (e.g. coding_agent \"hello\")."""
-    if argv is None:
-        return []
     a = list(argv)
-    if not a:
-        return a
+    if a is None:
+        return []
+
     head = a[0]
     if head in SUBCOMMANDS or head in ("-h", "--help", "--version"):
         return a
@@ -134,11 +133,7 @@ def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     return build_parser().parse_args(normalize_argv(argv))
 
 
-def build_runtime_settings(
-    *,
-    provider: str | None,
-    workdir: str | None,
-) -> Settings:
+def build_runtime_settings(provider: str | None, workdir: str | None) -> Settings:
     updates = {}
     if provider is not None:
         updates["LLM_PROVIDER"] = provider
@@ -152,8 +147,7 @@ def main(argv: Sequence[str] | None = None) -> None:
     args = build_parser().parse_args(raw)
 
     runtime_settings = build_runtime_settings(
-        provider=args.provider,
-        workdir=args.workdir,
+        provider=args.provider, workdir=args.workdir
     )
 
     command = getattr(args, "command", None)
