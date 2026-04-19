@@ -6,11 +6,6 @@ Also there is ollama provider for usage with local models
 ## TODO:
 
 - check if i could make tunnel between pc with llm on gpu
-- add full cli tool support/commands
-- add fully functional modes (agent, debug, architecture)
-- add memory for agent
-- add indexing for project
-- make requests not in single cli call, but in separate chat (like cursor cli)
 
 ## Setup
 
@@ -41,29 +36,32 @@ pytest
 
 ## Usage
 
-Show all functions:
+Console script name is `coding_agent` (see `pyproject.toml`). Help and subcommands:
 
 ```bash
-python -m src.main --help
-# or with uv
-uv run coding-agent --help 
-# or inside venv
-coding-agent --help
+uv run coding_agent --help
+# or from an activated venv where the package is installed:
+coding_agent --help
 ```
 
-Project folder set to playground_calculator, so llm have access to all folder contents
+Subcommands: `run` (single prompt), `chat` (REPL), `index` (file manifest JSON), `memory show|clear`. Global flags `--workdir`, `--provider`, and `--verbose` work on each subcommand (e.g. after `run`).
+
+The default working directory is `./playground` (override with `--workdir`). Persistent notes live in `<workdir>/.coding_agent/memory.md`; the index is `<workdir>/.coding_agent/index.json`.
 
 Example commands:
 
 ```bash
-coding-agent "Read main.py" --verbose
-coding-agent "Plan a refactor on main.py" --mode plan
-coding-agent "Fix the failing test" --mode debug
+coding_agent "Read main.py" --verbose
+coding_agent run "Plan a refactor on main.py" --mode plan
+coding_agent run "Fix the failing test" --mode debug
 
-# switch provider
-coding-agent "Your prompt" --provider gemini
-coding-agent "List files" --provider ollama --verbose --mode debug
+# modes: general/agent, plan, arch/architecture, debug
+coding_agent run "Your prompt" --provider gemini
+coding_agent run "List files" --provider ollama --verbose --mode debug
 
+coding_agent chat --mode agent --session mysession --resume
+coding_agent index --workdir ./playground
+coding_agent memory show
 ```
 
 ### Example conversation
@@ -104,21 +102,28 @@ The broad `except Exception` is a catch-all. While sometimes necessary for simpl
 
 ## Architecture
 
-Introduce a small provider interface used by main.py
+New architecture for cli agent, uncluding memoty
 
-```schema
-┌──────────────────────────────────────────────────────┐
-│                                                      │
-│ ┌─────────┐   ┌──────────────┐   ┌──────────────┐    │
-│ │         │   │              │   │              │    │
-│ │ main.py ├──►│ LLMProvider  ├──►│ GeminiClient │    │
-│ │         │   │       ┬      │   │              │    │
-│ └────┬────┘   └──────────────┘   └──────────────┘    │
-│      │                └────────┐                     │
-│      │        ┌──────────────┐ │ ┌──────────────┐    │
-│      │        │              │ │ │              │    │
-│      └───────►│ ToolExecutor │◄┴►┤ OllamaClient │    │
-│               │              │   │              │    │
-│               └──────────────┘   └──────────────┘    │
-└──────────────────────────────────────────────────────┘ 
-```
+┌──────────────────────┐ ┌───────────────────────────────────────────────────────────────────────────┐
+│         CLI          │ │                                   Core                                    |
+│                      │ │                                                                           |
+│                      │ │                                                                           |
+│ ┌──────────────────┐ │ │ ┌──────────────────────┐   ┌─────────────────┐   ┌──────────────────────┐ |
+│ │                  │ │ │ │                      │   │                 │   │                      │ |
+│ │  run subcommand  ├─┼►│ │  build_system_prompt ├──►│ Gemini / Ollama ├──►│ Tools + index search │ |
+│ │                  │ │ │ │                      │   │                 │   │                      │ |
+│ └──────────────────┘ │ │ └──────────────────────┘   └─────────────────┘   └──────────────────────┘ |
+│                      │ │            ▲                                                              |
+│ ┌──────────────────┐ │ │ ┌──────────┴───────────┐                                                  |
+│ │                  │ │ │ │                      │                                                  |
+│ │ chat subcommand  ├─┼►│ │   Message history    │                                                  |
+│ │                  │ │ │ │                      │                                                  |
+│ └──────────────────┘ │ │ └──────────────────────┘                                                  |
+│                      │ │                                                                           |
+│                      │ └───────────────────────────────────────────────────────────────────────────┘
+│ ┌──────────────────┐ │ ┌────────────────────────┐
+│ │                  │ │ │                        │
+│ │ index subcommand ├─┼►│ Manifest index on disk │
+│ │                  │ │ │                        │
+│ └──────────────────┘ │ └────────────────────────┘
+└──────────────────────┘
