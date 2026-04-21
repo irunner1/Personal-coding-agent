@@ -1,9 +1,10 @@
 import json
 from typing import Any
 
+from ollama import Client
+
 from call_function import execute_tool
 from config import Settings
-from ollama import Client
 from tools.tool_definitions import build_ollama_tools
 
 
@@ -68,11 +69,7 @@ class OllamaProvider:
         elif messages[0].get("role") != "system":
             messages.insert(0, {"role": "system", "content": system_instruction})
         messages.append({"role": "user", "content": user_text})
-        return self._run_tool_loop_until_text(
-            messages,
-            verbose=verbose,
-            max_turns=max_turns,
-        )
+        return self._run_tool_loop_until_text(messages, max_turns=max_turns)
 
     def run_agent(
         self,
@@ -86,11 +83,7 @@ class OllamaProvider:
             {"role": "system", "content": system_instruction},
             {"role": "user", "content": user_prompt},
         ]
-        self._run_tool_loop_until_text(
-            messages,
-            verbose=verbose,
-            max_turns=max_turns,
-        )
+        self._run_tool_loop_until_text(messages, max_turns=max_turns)
 
     def _run_tool_loop_until_text(self, messages: list[dict], max_turns: int) -> str:
         for _ in range(max_turns):
@@ -121,6 +114,7 @@ class OllamaProvider:
                 else:
                     args_dict = dict(raw_args) if raw_args else {}
 
+                args_dict["working_directory"] = self.settings.WORKING_DIR
                 print(f"Calling function: {fn.name}({args_dict})")
                 payload = execute_tool(fn.name, args_dict)
                 tool_message = {"role": "tool", "content": json.dumps(payload)}
@@ -133,4 +127,5 @@ class OllamaProvider:
         print(
             "Error: Maximum iterations reached without a final text response from the model."
         )
+        raise SystemExit(1)
         raise SystemExit(1)

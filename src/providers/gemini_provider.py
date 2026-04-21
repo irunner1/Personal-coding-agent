@@ -1,9 +1,10 @@
 from typing import Any
 
-from call_function import available_functions, call_function
-from config import Settings
 from google import genai
 from google.genai import types
+
+from call_function import available_functions, call_function
+from config import Settings
 
 
 class GeminiProvider:

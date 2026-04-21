@@ -1,10 +1,11 @@
+from google.genai import types
+
 from config import settings
 from functions.get_file_content import get_file_content
 from functions.get_files_info import get_files_info
 from functions.grep_project import grep_project
 from functions.run_python_file import run_python_file
 from functions.write_file import write_file
-from google.genai import types
 from tools.tool_definitions import build_gemini_tool
 
 available_functions = build_gemini_tool()
@@ -24,7 +25,8 @@ def execute_tool(function_name: str, raw_args: dict | None) -> dict:
         return {"error": f"Unknown function: {function_name}"}
 
     args = dict(raw_args) if raw_args else {}
-    args["working_directory"] = settings.WORKING_DIR
+    if "working_directory" not in args:
+        args["working_directory"] = settings.WORKING_DIR
 
     try:
         result = function_map[function_name](**args)
@@ -59,4 +61,5 @@ def call_function(function_call, verbose: bool = False) -> types.Content:
         function_name,
         dict(function_call.args) if function_call.args else None,
     )
+    return gemini_tool_response(function_name, payload)
     return gemini_tool_response(function_name, payload)

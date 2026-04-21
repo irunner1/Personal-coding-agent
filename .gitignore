@@ -45,3 +45,4 @@ cache
 
 # local files
 data/
+.coding_agent/

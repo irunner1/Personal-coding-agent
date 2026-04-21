@@ -93,12 +93,6 @@ def build_parser() -> argparse.ArgumentParser:
         parents=[common],
     )
     chat_p.add_argument(
-        "--mode",
-        choices=list(VALID_MODES),
-        default=MODE_AGENT,
-        help="Behavior rule pack for the session.",
-    )
-    chat_p.add_argument(
         "--session",
         dest="session_name",
         default=None,
@@ -129,11 +123,12 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-    return build_parser().parse_args(normalize_argv(argv))
+# def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+#     return build_parser().parse_args(normalize_argv(argv))
 
 
 def build_runtime_settings(provider: str | None, workdir: str | None) -> Settings:
+    print(workdir)
     updates = {}
     if provider is not None:
         updates["LLM_PROVIDER"] = provider
@@ -199,8 +194,8 @@ def main(argv: Sequence[str] | None = None) -> None:
         run_chat(
             provider,
             runtime_settings,
-            mode=args.mode,
-            verbose=args.verbose,
+            mode=MODE_AGENT,
+            verbose=False,
             session_name=args.session_name,
             resume=args.resume,
         )
