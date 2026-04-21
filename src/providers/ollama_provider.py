@@ -128,4 +128,3 @@ class OllamaProvider:
             "Error: Maximum iterations reached without a final text response from the model."
         )
         raise SystemExit(1)
-        raise SystemExit(1)

@@ -123,12 +123,11 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-# def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
-#     return build_parser().parse_args(normalize_argv(argv))
+def parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
+    return build_parser().parse_args(normalize_argv(argv))
 
 
 def build_runtime_settings(provider: str | None, workdir: str | None) -> Settings:
-    print(workdir)
     updates = {}
     if provider is not None:
         updates["LLM_PROVIDER"] = provider
@@ -138,8 +137,7 @@ def build_runtime_settings(provider: str | None, workdir: str | None) -> Setting
 
 
 def main(argv: Sequence[str] | None = None) -> None:
-    raw = normalize_argv(argv if argv is not None else sys.argv[1:])
-    args = build_parser().parse_args(raw)
+    args = parse_args(argv if argv is not None else sys.argv[1:])
 
     runtime_settings = build_runtime_settings(
         provider=args.provider, workdir=args.workdir

@@ -4,6 +4,7 @@ from config import settings
 from functions.get_file_content import get_file_content
 from functions.get_files_info import get_files_info
 from functions.grep_project import grep_project
+from functions.run_cli_command import run_cli_command
 from functions.run_python_file import run_python_file
 from functions.write_file import write_file
 from tools.tool_definitions import build_gemini_tool
@@ -16,6 +17,7 @@ function_map = {
     "run_python_file": run_python_file,
     "write_file": write_file,
     "grep_project": grep_project,
+    "run_cli_command": run_cli_command,
 }
 
 
@@ -61,5 +63,4 @@ def call_function(function_call, verbose: bool = False) -> types.Content:
         function_name,
         dict(function_call.args) if function_call.args else None,
     )
-    return gemini_tool_response(function_name, payload)
     return gemini_tool_response(function_name, payload)

@@ -24,7 +24,9 @@ TOOL_SPECS = [
     },
     {
         "name": "get_file_content",
-        "description": ("Return file contents up to a configured maximum length; large files are truncated."),
+        "description": (
+            "Return file contents up to a configured maximum length; large files are truncated."
+        ),
         "parameters": {
             "type": "object",
             "properties": {
@@ -102,6 +104,38 @@ TOOL_SPECS = [
                 },
             },
             "required": ["pattern"],
+        },
+    },
+    {
+        "name": "run_cli_command",
+        "description": (
+            "Run cli commands like ls -1, pytest -m, dir and others"
+            "Returns result of runing command"
+        ),
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "str",
+                    "description": "The command string to execute.",
+                },
+                "check": {
+                    "type": "bool",
+                    "description": (
+                        "If True, raises a CalledProcessError if the command returns a non-zero exit code"
+                    ),
+                },
+                "capture_output": {
+                    "type": "bool",
+                    "description": "If True, stdout and stderr will be captured.",
+                },
+                "shell": {
+                    "type": "bool",
+                    "description": "If True, the command will be executed through the shell "
+                    "(e.g., 'bash -c'). Use with caution.",
+                },
+            },
+            "required": ["command"],
         },
     },
 ]

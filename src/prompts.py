@@ -15,6 +15,7 @@ You can use tools to:
 - Execute Python files with optional arguments (run_python_file)
 - Write or overwrite files (write_file)
 - Search file contents with a regex (grep_project)
+- Run cli commands (run_cli_command)
 
 All paths must be relative to the working directory. Do not pass a working directory argument;
 it is injected automatically for security.
