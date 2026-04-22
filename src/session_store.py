@@ -3,8 +3,9 @@
 import json
 from pathlib import Path
 
-from config import Settings
 from google.genai import types
+
+from config import Settings
 from memory_store import coding_agent_root
 
 

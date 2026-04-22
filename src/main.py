@@ -2,7 +2,7 @@ import argparse
 import sys
 from typing import Sequence
 
-from chat.repl import run_chat
+from chat.chat_loop import run_chat
 from config import Settings, settings
 from indexing.manifest import write_manifest
 from memory_store import clear_memory_file, load_memory_text

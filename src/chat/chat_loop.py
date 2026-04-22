@@ -49,6 +49,8 @@ def run_chat(
                         print("Session file is for Gemini; starting fresh with Ollama.")
                 else:
                     print("Could not resume session; starting fresh.")
+            else:
+                print("Could not resume session; starting fresh.")
 
     print("Chat mode. Commands: /exit, /quit, /clear. EOF to exit.\n")
 
@@ -70,10 +72,11 @@ def run_chat(
 
         assistant = provider.run_chat(state, line, system_instruction, verbose=verbose)
 
-        provider = runtime_settings.LLM_PROVIDER
+        provider_type = runtime_settings.LLM_PROVIDER
+
         if sess_path:
-            if provider == "ollama":
+            if provider_type == "ollama":
                 save_session(sess_path, provider="ollama", ollama_messages=state)
-            elif provider == "gemini":
+            elif provider_type == "gemini":
                 gemini_turns.append({"user": line, "assistant": assistant})
                 save_session(sess_path, provider="gemini", gemini_turns=gemini_turns)
