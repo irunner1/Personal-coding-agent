@@ -6,6 +6,13 @@ Also there is ollama provider for usage with local models
 ## TODO
 
 - check if i could make tunnel between pc with llm on gpu
+- improve chat
+- add `test` mode and tools for running
+- ~~add full cli tool support/commands~~
+- ~~add fully functional modes (agent, debug, architecture)~~
+- ~~add memory for agent~~
+- ~~add indexing for project~~
+- ~~make requests not in single cli call, but in separate chat (like cursor cli)~~
 
 ## Setup
 
@@ -104,38 +111,43 @@ The broad `except Exception` is a catch-all. While sometimes necessary for simpl
 (.venv) ➜  agent git:(main) ✗ coding_agent chat --session mysession
 Chat mode. Commands: /exit, /quit, /clear. EOF to exit.
 
-> how to run coding agent with run --workdir argument, if i try it, default directory is not changing
-Calling function: grep_project({'pattern': '--workdir', 'directory': 'main.py'})
-Calling function: get_file_content({'file_path': 'main.py'})
-Calling function: get_file_content({'file_path': 'main.py'})
-Calling function: get_file_content({'file_path': 'config.py'})
-Calling function: api/read_file({'path': 'main.py'})
-Calling function: grep_project({'directory': 'main.py', 'pattern': '.*workdir.*'})
+> how to run calculator app?
+Calling function: get_files_info({'working_directory': './playground'})
+Calling function: get_file_content({'file_path': 'calculator.py', 'working_directory': './playground'})
+Calling function: run_python_file({'args': ['"3 + 5"'], 'file_path': 'calculator.py', 'working_directory': './playground'})
+Calling function: run_python_file({'args': ['3', '+', '5'], 'file_path': 'calculator.py', 'working_directory': './playground'})
 Response:
+The calculator app runs correctly via the command line!
 
-...
+**To run it yourself, use the following format in your terminal:**
+
+python calculator.py <number1> <operator> <number2> ...
+
+**Example:** To calculate `10 * 2 - 1`:
+
+python calculator.py 10 * 2 - 1
+
 ```
 
 ## Architecture
 
-New architecture for cli agent, uncluding memoty
-
+```architecture
 ┌──────────────────────┐ ┌───────────────────────────────────────────────────────────────────────────┐
-│         CLI          │ │                                   Core                                    |
-│                      │ │                                                                           |
-│                      │ │                                                                           |
-│ ┌──────────────────┐ │ │ ┌──────────────────────┐   ┌─────────────────┐   ┌──────────────────────┐ |
-│ │                  │ │ │ │                      │   │                 │   │                      │ |
-│ │  run subcommand  ├─┼►│ │  build_system_prompt ├──►│ Gemini / Ollama ├──►│ Tools + index search │ |
-│ │                  │ │ │ │                      │   │                 │   │                      │ |
-│ └──────────────────┘ │ │ └──────────────────────┘   └─────────────────┘   └──────────────────────┘ |
-│                      │ │            ▲                                                              |
-│ ┌──────────────────┐ │ │ ┌──────────┴───────────┐                                                  |
-│ │                  │ │ │ │                      │                                                  |
-│ │ chat subcommand  ├─┼►│ │   Message history    │                                                  |
-│ │                  │ │ │ │                      │                                                  |
-│ └──────────────────┘ │ │ └──────────────────────┘                                                  |
-│                      │ │                                                                           |
+│         CLI          │ │                                   Core                                    │
+│                      │ │                                                                           │
+│                      │ │                                                                           │
+│ ┌──────────────────┐ │ │ ┌─────────────────────┐    ┌─────────────────┐   ┌──────────────────────┐ │
+│ │                  │ │ │ │                     │    │                 │   │                      │ │
+│ │  run subcommand  ├─┼►│ │ build_system_prompt ├───►│ Gemini / Ollama ├──►│ Tools + index search │ │
+│ │                  │ │ │ │                     │    │                 │   │                      │ │
+│ └──────────────────┘ │ │ └─────────────────────┘    └─────────────────┘   └──────────────────────┘ │
+│                      │ │            ▲                                                              │
+│ ┌──────────────────┐ │ │ ┌──────────┴──────────┐                                                   │
+│ │                  │ │ │ │                     │                                                   │
+│ │ chat subcommand  ├─┼►│ │   Message history   │                                                   │
+│ │                  │ │ │ │                     │                                                   │
+│ └──────────────────┘ │ │ └─────────────────────┘                                                   │
+│                      │ │                                                                           │
 │                      │ └───────────────────────────────────────────────────────────────────────────┘
 │ ┌──────────────────┐ │ ┌────────────────────────┐
 │ │                  │ │ │                        │
@@ -143,3 +155,4 @@ New architecture for cli agent, uncluding memoty
 │ │                  │ │ │                        │
 │ └──────────────────┘ │ └────────────────────────┘
 └──────────────────────┘
+```
