@@ -2,8 +2,9 @@ MODE_AGENT = "agent"
 MODE_PLAN = "plan"
 MODE_ARCHITECTURE = "architecture"
 MODE_DEBUG = "debug"
+MODE_TEST = "test"
 
-VALID_MODES = (MODE_AGENT, MODE_PLAN, MODE_ARCHITECTURE, MODE_DEBUG)
+VALID_MODES = (MODE_AGENT, MODE_PLAN, MODE_ARCHITECTURE, MODE_DEBUG, MODE_TEST)
 
 
 BASE_SYSTEM_PROMPT = """
@@ -54,6 +55,17 @@ DEBUG_PACK = """
 - Do not edit unrelated files or "clean up" beyond what fixes the issue.
 """
 
+TEST_PACK = """
+## Test mode
+- Focus on testing current features, use run_cli_command to run tests
+- Use current environment for running tests
+- Write tests to folder tests/ if there is no any, create one
+- Use pytest and monkeypatching for creating tests. Do not write many tests,
+focus on main features
+- If some functions do not tests properly, refactor related functions
+- Avoid code duplication, make fixtures for tests
+"""
+
 
 def build_system_prompt(mode: str = MODE_AGENT, memory_text: str | None = None) -> str:
     modes = {
@@ -61,6 +73,7 @@ def build_system_prompt(mode: str = MODE_AGENT, memory_text: str | None = None) 
         MODE_PLAN: PLAN_PACK,
         MODE_ARCHITECTURE: ARCHITECTURE_PACK,
         MODE_DEBUG: DEBUG_PACK,
+        MODE_TEST: TEST_PACK,
     }
     parts = [BASE_SYSTEM_PROMPT, modes.get(mode, BASE_SYSTEM_PROMPT)]
 
