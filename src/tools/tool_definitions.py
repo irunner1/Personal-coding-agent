@@ -116,21 +116,21 @@ TOOL_SPECS = [
             "type": "object",
             "properties": {
                 "command": {
-                    "type": "str",
+                    "type": "string",
                     "description": "The command string to execute.",
                 },
                 "check": {
-                    "type": "bool",
+                    "type": "boolean",
                     "description": (
                         "If True, raises a CalledProcessError if the command returns a non-zero exit code"
                     ),
                 },
                 "capture_output": {
-                    "type": "bool",
+                    "type": "boolean",
                     "description": "If True, stdout and stderr will be captured.",
                 },
                 "shell": {
-                    "type": "bool",
+                    "type": "boolean",
                     "description": "If True, the command will be executed through the shell "
                     "(e.g., 'bash -c'). Use with caution.",
                 },

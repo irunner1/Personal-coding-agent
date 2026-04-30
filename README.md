@@ -7,7 +7,7 @@ Also there is ollama provider for usage with local models
 
 - check if i could make tunnel between pc with llm on gpu
 - improve chat
-- add `test` mode and tools for running
+- ~~add `test` mode and tools for running~~
 - ~~add full cli tool support/commands~~
 - ~~add fully functional modes (agent, debug, architecture)~~
 - ~~add memory for agent~~

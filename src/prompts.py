@@ -23,6 +23,13 @@ it is injected automatically for security.
 
 When answering, cite file paths you used. Prefer small, focused edits. If unsure after reading,
 say what is missing instead of guessing.
+
+## Coding workflow
+- Inspect before changing: use get_files_info, get_file_content, and grep_project as needed.
+- Prefer the smallest change that solves the problem; avoid rewriting entire files unless required.
+- After substantive edits, run tests or the relevant command
+  (run_cli_command / run_python_file) when available.
+- Name the files and symbols you changed so the user can follow along.
 """
 
 AGENT_PACK = """

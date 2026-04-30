@@ -15,10 +15,10 @@ from session_store import (
 def _print_chat_help(current_mode: str) -> None:
     modes = ", ".join(VALID_MODES)
     print("Commands:")
-    print(f"  /help              Show this help")
+    print("  /help              Show this help")
     print(f"  /mode <name>      Switch mode ({modes}); does not clear history")
-    print(f"  /clear            Reset conversation (keeps current mode)")
-    print(f"  /exit, /quit      Leave chat")
+    print("  /clear            Reset conversation (keeps current mode)")
+    print("  /exit, /quit      Leave chat")
     print(f"Current mode: {current_mode}\n")
 
 
@@ -72,10 +72,7 @@ def run_chat(
     if isinstance(state, list) and state and state[0].get("role") == "system":
         state[0]["content"] = system_instruction
 
-    print(
-        "Chat mode. Type /help for commands. "
-        "EOF to exit.\n"
-    )
+    print("Chat mode. Type /help for commands. " "EOF to exit.\n")
     print(f"Current mode: {current_mode}\n")
 
     while True:
@@ -108,7 +105,9 @@ def run_chat(
                 continue
             new_mode = parts[1].strip()
             if new_mode not in VALID_MODES:
-                print(f"Unknown mode {new_mode!r}. Choose one of: {', '.join(VALID_MODES)}\n")
+                print(
+                    f"Unknown mode {new_mode!r}. Choose one of: {', '.join(VALID_MODES)}\n"
+                )
                 continue
             current_mode = new_mode
             system_instruction = build_system_prompt(current_mode, memory_text=memory)

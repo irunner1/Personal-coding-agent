@@ -16,10 +16,8 @@ def run_cli_command(
                Use with caution.
 
     Returns:
-        subprocess.CompletedProcess: An object containing the return code, stdout, and stderr.
-
-    Raises:
-        subprocess.CalledProcessError: If check is True and the command fails.
+        Captured stdout/stderr when capture_output is True; otherwise an empty string on success.
+        On failure with check=True, returns an error summary string instead of raising.
     """
     print(f"--- Running command: {command} ---")
     try:
@@ -32,26 +30,33 @@ def run_cli_command(
                 text=True,
             )
         else:
-            # Use shlex.split to handle arguments correctly if the command is a string
-            # and we want to run it without a shell, although for simple cases,
-            # passing a list is better practice. For simplicity here, we assume
-            # splitting by space is okay if shell=False and we pass a single string.
-            # A robust implementation would require passing a list of arguments.
-            args = shlex.split(command)
+            argv = shlex.split(command)
             result = subprocess.run(
-                args, check=check, capture_output=capture_output, text=True, shell=True
+                argv,
+                check=check,
+                capture_output=capture_output,
+                text=True,
+                shell=False,
             )
-
-        print(f"Command executed successfully: {result}")
-        return str(result)
     except subprocess.CalledProcessError as e:
         return (
             f"ERROR: Command failed with exit code {e.returncode}\n"
-            f"STDOUT: {e.stdout}\nSTDERR: {e.stderr}"
+            f"STDOUT: {e.stdout}\n"
+            f"STDERR: {e.stderr}"
         )
     except FileNotFoundError:
         return (
-            f"ERROR: Command not found. Make sure the command is installed and in PATH."
+            "ERROR: Command not found. Make sure the command is installed and in PATH."
         )
     except Exception as e:
         return f"An unexpected error occurred while running the command: {e}"
+
+    print(f"Command finished (exit {result.returncode})")
+    if capture_output:
+        parts: list[str] = []
+        if result.stdout:
+            parts.append(result.stdout)
+        if result.stderr:
+            parts.append(result.stderr)
+        return "".join(parts)
+    return ""
