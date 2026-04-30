@@ -68,6 +68,8 @@ class OllamaProvider:
             messages.append({"role": "system", "content": system_instruction})
         elif messages[0].get("role") != "system":
             messages.insert(0, {"role": "system", "content": system_instruction})
+        else:
+            messages[0]["content"] = system_instruction
         messages.append({"role": "user", "content": user_text})
         return self._run_tool_loop_until_text(messages, max_turns=max_turns)
 

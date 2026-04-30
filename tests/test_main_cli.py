@@ -2,6 +2,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
+import cli_handlers
 import src.main as main_module
 from src.config import Settings
 from src.prompts import MODE_AGENT
@@ -39,6 +40,10 @@ def test_parse_chat_and_index() -> None:
     chat_args = main_module.parse_args(["chat", "--session", "dev"])
     assert chat_args.command == "chat"
     assert chat_args.session_name == "dev"
+    assert chat_args.mode == MODE_AGENT
+
+    chat_plan = main_module.parse_args(["chat", "--mode", "plan"])
+    assert chat_plan.mode == "plan"
 
     idx_args = main_module.parse_args(["index"])
     assert idx_args.command == "index"
@@ -59,9 +64,9 @@ def test_main_passes_through_settings_when_no_provider_flag(
         captured.append(s)
         return MagicMock()
 
-    monkeypatch.setattr(main_module, "create_provider", spy_create)
+    monkeypatch.setattr(cli_handlers, "create_provider", spy_create)
     base = Settings(LLM_PROVIDER="gemini", GEMINI_API_KEY="k")
-    monkeypatch.setattr(main_module, "settings", base)
+    monkeypatch.setattr(cli_handlers, "settings", base)
 
     main_module.main(["run", "just prompt"])
 
@@ -76,12 +81,9 @@ def test_main_overrides_provider_from_cli(monkeypatch: pytest.MonkeyPatch) -> No
         captured.append(s)
         return MagicMock()
 
-    monkeypatch.setattr(main_module, "create_provider", spy_create)
-    monkeypatch.setattr(
-        main_module,
-        "settings",
-        Settings(LLM_PROVIDER="gemini", GEMINI_API_KEY="k"),
-    )
+    monkeypatch.setattr(cli_handlers, "create_provider", spy_create)
+    base = Settings(LLM_PROVIDER="gemini", GEMINI_API_KEY="k")
+    monkeypatch.setattr(cli_handlers, "settings", base)
 
     main_module.main(["run", "task", "--provider", "ollama"])
 

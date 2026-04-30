@@ -9,7 +9,8 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    MAX_FILE_CONTENTS_LENGTH: int = 1000
+    MAX_FILE_CONTENTS_LENGTH: int = 65536
+    MAX_AGENT_TURNS: int = 20
     WORKING_DIR: str = "./playground"
     LLM_PROVIDER: Literal["gemini", "ollama"] = "ollama"
 

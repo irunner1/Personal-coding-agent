@@ -9,7 +9,7 @@ from src.functions.run_cli_command import run_cli_command
 @pytest.fixture(autouse=True)
 def mock_subprocess_run():
     with patch(
-        'subprocess.run',
+        "subprocess.run",
         return_value=MagicMock(
             returncode=0, stdout="Mock STDOUT", stderr="Mock STDERR"
         ),
@@ -19,7 +19,7 @@ def mock_subprocess_run():
 
 def test_run_cli_command_file_not_found_error_with_check_true():
     """Test that FileNotFoundError is properly handled when check=True"""
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.side_effect = FileNotFoundError(
             "No such file or directory: 'non_existent_command'"
         )
@@ -34,7 +34,7 @@ def test_run_cli_command_file_not_found_error_with_check_true():
 
 def test_run_cli_command_generic_exception_with_check_false():
     """Test that generic Exception returns error string when check=False"""
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.side_effect = ValueError("Invalid command format")
 
         result = run_cli_command(
@@ -47,7 +47,7 @@ def test_run_cli_command_generic_exception_with_check_false():
 
 def test_run_cli_command_success_no_capture():
     command = "echo hello"
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.return_value = MagicMock(
             returncode=0, stdout="Mock STDOUT", stderr="Mock STDERR"
         )
@@ -62,7 +62,7 @@ def test_run_cli_command_success_no_capture():
 def test_run_cli_command_check_raises_on_failure():
     error_output = "Command failed"
 
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.side_effect = subprocess.CalledProcessError(
             returncode=1,
             cmd="non_existent_command",
@@ -84,7 +84,7 @@ def test_run_cli_command_check_raises_on_failure():
 def test_run_cli_command_shell_invocation():
     command = "echo 'hi' && echo 'bye'"
 
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.return_value = MagicMock(
             returncode=0, stdout="hi\\nbye", stderr=""
         )
@@ -99,7 +99,7 @@ def test_run_cli_command_shell_invocation():
 def test_run_cli_command_with_arguments():
     command = "grep pattern file.txt"
 
-    with patch('subprocess.run') as mock_subprocess:
+    with patch("subprocess.run") as mock_subprocess:
         mock_subprocess.return_value = MagicMock(
             returncode=0, stdout="Match found", stderr=""
         )
