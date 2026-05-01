@@ -52,6 +52,7 @@ def handle_run(args: Namespace, runtime_settings: Settings) -> None:
             file=sys.stderr,
         )
         raise SystemExit(2)
+
     provider = create_provider(runtime_settings)
     memory_text = load_memory_text(runtime_settings)
     system_instruction = build_system_prompt(args.mode, memory_text=memory_text)

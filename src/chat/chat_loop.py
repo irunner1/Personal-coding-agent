@@ -15,10 +15,10 @@ from session_store import (
 def _print_chat_help(current_mode: str) -> None:
     modes = ", ".join(VALID_MODES)
     print("Commands:")
-    print("  /help              Show this help")
-    print(f"  /mode <name>      Switch mode ({modes}); does not clear history")
-    print("  /clear            Reset conversation (keeps current mode)")
-    print("  /exit, /quit      Leave chat")
+    print(" /help             Show this help")
+    print(f" /mode <name>      Switch mode ({modes}); does not clear history")
+    print(" /clear            Reset conversation (keeps current mode)")
+    print(" /exit, /quit      Leave chat")
     print(f"Current mode: {current_mode}\n")
 
 
@@ -40,7 +40,7 @@ def run_chat(
         else getattr(runtime_settings, "MAX_AGENT_TURNS", 20)
     )
 
-    gemini_turns: list[dict] = []
+    gemini_turns = []
     state = provider.new_chat_state(system_instruction)
 
     sess_path = None

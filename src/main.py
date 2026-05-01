@@ -1,17 +1,8 @@
 import sys
 from typing import Sequence
 
-from cli_args import build_parser, normalize_argv, parse_args
+from cli_args import build_parser, parse_args
 from cli_handlers import build_runtime_settings, command_handlers
-
-# Re-export for tests and backwards compatibility
-__all__ = [
-    "build_parser",
-    "build_runtime_settings",
-    "main",
-    "normalize_argv",
-    "parse_args",
-]
 
 
 def main(argv: Sequence[str] | None = None) -> None:

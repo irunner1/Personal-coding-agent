@@ -8,6 +8,22 @@ from prompts import MODE_AGENT, VALID_MODES
 SUBCOMMANDS = frozenset({"run", "chat", "index", "memory"})
 
 
+class SpacedChoicesFormatter(argparse.HelpFormatter):
+    """Formatter that adds spaces after commas in choice lists."""
+
+    def _metavar_formatter(self, action, default_metavar):
+        if action.choices is not None:
+            result = "{" + ", ".join(str(c) for c in action.choices) + "}"
+
+            def format(tuple_size):
+                if isinstance(tuple_size, int):
+                    return (result,) * tuple_size
+                return (result,)
+
+            return format
+        return super()._metavar_formatter(action, default_metavar)
+
+
 def normalize_argv(argv: Sequence[str] | None) -> list[str]:
     """Prepend implicit 'run' for legacy invocations (e.g. coding_agent \"hello\")."""
     if argv is None:
@@ -27,7 +43,7 @@ def normalize_argv(argv: Sequence[str] | None) -> list[str]:
 
 def _common_parent() -> argparse.ArgumentParser:
     """Shared flags so they work after the subcommand (e.g. coding_agent run hi --verbose)."""
-    p = argparse.ArgumentParser(add_help=False)
+    p = argparse.ArgumentParser(add_help=False, formatter_class=SpacedChoicesFormatter)
     p.add_argument(
         "--workdir",
         default=None,
@@ -52,6 +68,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="coding_agent",
         description="AI code assistant with tools (Gemini or Ollama).",
+        formatter_class=SpacedChoicesFormatter,
     )
     parser.add_argument(
         "--version",
@@ -65,6 +82,7 @@ def build_parser() -> argparse.ArgumentParser:
         "run",
         help="Send one prompt and exit.",
         parents=[common],
+        formatter_class=SpacedChoicesFormatter,
     )
     run_p.add_argument(
         "prompt",
@@ -90,6 +108,7 @@ def build_parser() -> argparse.ArgumentParser:
         "chat",
         help="Interactive multi-turn chat.",
         parents=[common],
+        formatter_class=SpacedChoicesFormatter,
     )
     chat_p.add_argument(
         "--mode",

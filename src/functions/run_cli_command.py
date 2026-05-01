@@ -53,7 +53,7 @@ def run_cli_command(
 
     print(f"Command finished (exit {result.returncode})")
     if capture_output:
-        parts: list[str] = []
+        parts = []
         if result.stdout:
             parts.append(result.stdout)
         if result.stderr:
