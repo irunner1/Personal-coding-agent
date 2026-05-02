@@ -55,7 +55,7 @@ def test_run_cli_command_success_no_capture():
         run_cli_command(command=command, capture_output=False, check=False, shell=False)
 
         mock_subprocess.assert_called_with(
-            command.split(), check=False, capture_output=False, text=True, shell=True
+            command.split(), check=False, capture_output=False, text=True, shell=False
         )
 
 
@@ -107,5 +107,5 @@ def test_run_cli_command_with_arguments():
         run_cli_command(command=command, capture_output=True, check=False, shell=False)
 
         mock_subprocess.assert_called_with(
-            command.split(), check=False, capture_output=True, text=True, shell=True
+            command.split(), check=False, capture_output=True, text=True, shell=False
         )

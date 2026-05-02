@@ -1,9 +1,9 @@
 from src.prompts import (
+    BASE_SYSTEM_PROMPT,
     MODE_AGENT,
     MODE_ARCHITECTURE,
     MODE_DEBUG,
     MODE_PLAN,
-    BASE_SYSTEM_PROMPT,
     build_system_prompt,
 )
 
@@ -43,6 +43,7 @@ def test_debug_mode() -> None:
 def test_invalid_mode_falls_back_to_general() -> None:
     text = build_system_prompt("not-a-real-mode")
     assert BASE_SYSTEM_PROMPT in text
+    assert "## Coding workflow" in text
 
 
 def test_memory_text_appended() -> None:

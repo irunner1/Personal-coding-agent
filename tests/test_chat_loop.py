@@ -166,6 +166,36 @@ def test_run_chat_resume_session_not_found(mock_provider, mock_settings, monkeyp
     mock_provider.new_chat_state.assert_called_once()
 
 
+def test_run_chat_slash_mode_updates_prompt(mock_provider, mock_settings, monkeypatch):
+    modes_seen: list[str] = []
+
+    def record(m, memory_text=None):
+        modes_seen.append(m)
+        return f"SYS-{m}"
+
+    printed = []
+    inputs = ["/mode plan", "hi", "/exit"]
+    input_gen = (x for x in inputs)
+
+    monkeypatch.setattr("builtins.input", lambda _: next(input_gen))
+    monkeypatch.setattr(
+        "builtins.print", lambda *a, **k: printed.append(a[0] if a else "")
+    )
+    monkeypatch.setattr("src.chat.chat_loop.load_memory_text", lambda s: "memory")
+    monkeypatch.setattr("src.chat.chat_loop.build_system_prompt", record)
+    monkeypatch.setattr("src.chat.chat_loop.save_session", lambda p, **k: None)
+
+    mock_provider.new_chat_state.return_value = [{"role": "system", "content": "SYS-agent"}]
+
+    run_chat(mock_provider, mock_settings, "agent", False, None, False)
+
+    assert "plan" in modes_seen
+    assert modes_seen[-1] == "plan"
+    mock_provider.run_chat.assert_called_once()
+    _, _, sys_text = mock_provider.run_chat.call_args[0]
+    assert sys_text == "SYS-plan"
+
+
 def test_run_chat_resume_session_incompatible_provider(
     mock_provider, mock_settings, monkeypatch
 ):
